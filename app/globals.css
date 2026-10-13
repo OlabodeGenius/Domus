@@ -1,0 +1,379 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  /* The mix is inline here rather than behind a --chip variable on :root. A
+     var() nested inside a custom property is substituted where that property
+     is *declared*, so --chip would have been resolved once against :root's
+     primary and its resolved value inherited — a wrapper overriding the hue
+     or the alpha below would have changed nothing. Written here, @theme
+     inline puts the expression into the utility itself, where it resolves
+     against the element that uses it. */
+  --color-chip: color-mix(
+    in oklab,
+    var(--primary) var(--chip-alpha),
+    transparent
+  );
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@theme {
+  /* Softer than Tailwind's shadow-*, which puts a 10% black edge directly under
+     the element and reads as a hard line on surfaces this close to white.
+
+     Each one opens with a hairline ring so the edge is drawn by the shadow
+     itself — that is what lets a raised thing keep a defined edge without a
+     separate border darkening it. Then a wide, low-opacity spread does the
+     lifting.
+
+     Tinted with --foreground rather than pure black: the palette runs at hue
+     30, and a neutral-black shadow reads cold against a warm near-white. */
+  --shadow-soft:
+    0 0 0 1px hsl(30 6% 10% / 0.015), 0 2px 6px -2px hsl(30 6% 10% / 0.05),
+    0 6px 16px -6px hsl(30 6% 10% / 0.06);
+  --shadow-soft-lg:
+    0 0 0 1px hsl(30 6% 10% / 0.015), 0 8px 24px -6px hsl(30 6% 10% / 0.08),
+    0 24px 48px -24px hsl(30 6% 10% / 0.1);
+
+  --animate-marquee: marquee 40s linear infinite;
+
+  /* Each item carries its own trailing space as padding rather than flex gap,
+     so two copies measure exactly 2× one copy and -50% loops seamlessly. */
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* ── Soft Neutral ──────────────────────────────────────────────
+   Same variables shadcn generates, different values. HSL because
+   the per-project knob is a hue rotation.
+
+   The brand hue is hsl(30 6% 13%), the palette's own warm near-black,
+   picked by the user from the five the demo switcher offered. It is
+   the one knob a buyer of this template turns: rotate it across
+   --primary, --ring and --chart-1..3 and the whole page restyles.
+   Measured against this palette it lands 16.02 white-on-primary and
+   15.68 against the page — the widest of the five — and its chip
+   reads 1.122 on a card, inside the whisper band, at the thinner
+   alpha the next comment is about.
+
+   A near-black brand is a choice with a cost worth naming: the page
+   has no vivid hue to point with any more, so emphasis is carried by
+   ink weight, size and ground instead, and everything with colour on
+   it — photographs, the pastel status chips — carries all of it.
+
+   --sidebar-primary already held this exact value, so the two now
+   agree; before, they disagreed by a whole hue.
+
+   The page is the top of the surface ladder and every other rung is
+   a distance below it: soft tint 2.5, border 5, muted 6, secondary 8.
+   Move --background and every one of them moves with it, or the
+   components keyed to the page stop separating. Move the five
+   together or not at all.
+
+   --radius is 1.5rem so that rounded-lg lands on 24px (containers)
+   and rounded-sm on ~14px (rows inside a card). This shadcn version
+   derives the radius scale by multiplication, so check the
+   @theme inline block above before changing it.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --radius: 1.5rem;
+
+  /* Geist's row from the per-face table in the skill's setup notes, bound once
+     here so that `font-medium` means the emphasis step of whatever face is
+     loaded, `tracking-tight` means as much tightening as that face needs, and a
+     display line that wraps clears its own descenders. Swapping the face is the
+     import in layout.tsx and these numbers; no component changes.
+
+     Geist is a variable face, so the emphasis step does not have to be one of
+     the named cuts. 450 rather than 500 at the user's ask: at 500 a name inside
+     a card sat a step heavier than the roster around it wanted, and Geist's 450
+     lifts a line off its neighbours and stops there. `--font-weight-semibold`
+     is bound at 550 for the same reason — a project that ever reaches for it
+     gets the step above this one rather than the face's own 600. Components
+     still write the role and never the number, which is what makes this two
+     lines rather than a find-and-replace. */
+  --font-weight-normal: 400;
+  --font-weight-medium: 450;
+  --font-weight-semibold: 550;
+  --tracking-tight: -0.025em;
+  --tracking-tighter: -0.05em;
+  --leading-display: 1;
+  --text-5xl--line-height: var(--leading-display);
+  --text-6xl--line-height: var(--leading-display);
+  --text-7xl--line-height: var(--leading-display);
+
+  --secondary: hsl(30 6% 91%);
+  --secondary-foreground: hsl(30 6% 10%);
+  --muted: hsl(30 6% 93%);
+  --muted-foreground: hsl(30 4% 40%);
+  --background: hsl(30 25% 99%);
+  --accent: hsl(30 8% 96.5%);
+  --accent-foreground: hsl(30 6% 10%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(30 6% 10%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(30 6% 10%);
+
+  --foreground: hsl(30 6% 10%);
+
+  --primary: hsl(30 6% 13%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  /* The brand-hued chip, as a token rather than a bg-primary/10 written out in
+     every component. How far that alpha travels depends on how dark the primary
+     is: /10 of the reference green lands 1.150 against a card and whispers, /10
+     of a near-black primary lands 1.216 — past the band and a deeper step than
+     the well itself. So the alpha is the variable, and a palette that changes
+     the hue changes it too. This palette *is* the near-black one, so it takes
+     the thinner alpha: /6 reads 1.122 on a card. The mix itself lives in the
+     @theme block above, for the reason written there. */
+  --chip-alpha: 6%;
+  --destructive: hsl(4 62% 40%);
+
+  --border: hsl(30 6% 94%);
+  --input: hsl(30 5% 84%);
+  --ring: hsl(30 6% 13%);
+
+  /* One warm-grey ramp now, 13 → 25 → 37 → 72 → 85 at a steady 6%
+     saturation. The demo switcher derived 2 and 3 by dropping 5 and 11
+     points off the hue's own saturation, which for a 6% hue clamped to
+     1% and 0% — cold greys in a warm palette. Baked in, they keep the
+     6% every other neutral here carries. */
+  --chart-1: hsl(30 6% 13%);
+  --chart-2: hsl(30 6% 25%);
+  --chart-3: hsl(30 6% 37%);
+  --chart-4: hsl(30 6% 72%);
+  --chart-5: hsl(30 6% 85%);
+
+  --sidebar: hsl(30 6% 91%);
+  --sidebar-foreground: hsl(30 6% 10%);
+  --sidebar-primary: hsl(30 6% 13%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(30 6% 93.5%);
+  --sidebar-accent-foreground: hsl(30 6% 10%);
+  --sidebar-border: hsl(30 6% 91.5%);
+  --sidebar-ring: hsl(30 6% 13%);
+}
+
+@layer base {
+  /* Every focusable thing gets a visible ring, once, rather than a utility
+     repeated on fifty-six elements. The offset is the point: this style's
+     controls are pills, and a ring drawn flush against a rounded-full edge
+     disappears into it — which quality-floor.md names as the one focus case
+     that actually fails here. shadcn's controls set `outline-none` in their own
+     base and keep their generated ring, so they opt out of this and nothing is
+     drawn twice. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans font-normal;
+  }
+}
+
+@layer base {
+  /* The header is sticky, so anchors need somewhere to land. */
+  html {
+    scroll-padding-top: 6rem;
+  }
+
+  /* Optical corrections Tailwind does not ship. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer base {
+  /* No focus rule here on purpose. The shadcn stylesheet already ships a
+     global `:focus-visible { outline: 2px solid var(--ring); outline-offset:
+     2px }`, so every control on this page — including the header links, the
+     footer links and the card links that look like they declare nothing — is
+     already ringed, and already ringed with the offset a rounded-full control
+     needs. A second rule here was redundant, and the skill's own instruction
+     is to leave focus rings alone. */
+
+  /* No 300ms wait for a double-tap that is never coming, and no grey flash
+     box over a pill on Android. Both are touch defaults that read as lag. */
+  :where(a, button, summary, label, select, [role="button"]) {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Unlayered on purpose: @layer base loses to the utilities layer, so these
+   overrides have to sit outside the cascade layers to actually win. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+
+  /* The blanket kill. Individual components carry motion-reduce: variants for
+     the motion they own, but a template is going to grow motion this file has
+     never heard of, and the floor is that the page is complete with every
+     animation off. 0.01ms rather than 0s so animationend still fires. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Section reveal. Progressive enhancement, and every part of it is chosen for
+   the failure mode rather than for the effect:
+
+     - The hidden state is keyed to a data attribute that only JavaScript ever
+       sets. No JavaScript, hydration that never lands, a crashed observer —
+       all of them leave the page rendered, which is the one thing this must
+       not be able to break.
+     - reveal.tsx skips any section already on screen when it arms, so nothing
+       above the fold flashes out and back in.
+     - It also skips everything under prefers-reduced-motion, and the blanket
+       rule above is the second line of defence if it somehow does not.
+
+   The alternative was `animation-timeline: view()` — no JavaScript at all, and
+   genuinely the better technique. It is not here because its hidden state is
+   CSS, so a browser that supports the property but resolves the timeline
+   differently renders a blank section, and that is a failure a sold template
+   cannot carry.
+
+   Transform and opacity only: the two a compositor runs without laying out
+   the page again. */
+[data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(1.25rem);
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Accordion open and close, for every native <details> on the site — the FAQ
+   rows and the mobile menu's groups. shadcn's accordion is 200ms ease-out on
+   the panel's height and so is this, minus the component that measures that
+   height in JavaScript: ::details-content is the box the browser was already
+   collapsing, so the panel it hands us is the panel we transition.
+
+   `interpolate-size` is what makes `auto` a height CSS can tween to, and it is
+   the whole reason this works — a panel pinned to a measured pixel height is a
+   panel that lies after a resize or a font swap, which is the failure the
+   JavaScript version has to keep re-measuring to avoid. Scoped to <details>
+   rather than :root: it inherits, and ui/button carries `transition-all`, so
+   turning it on for the page would quietly give every button a height tween.
+
+   grid-template-rows and the 0fr/1fr pair — the way a hand-built accordion
+   usually does this — is not an option here. A closed ::details-content is
+   `content-visibility: hidden` and skips layout, so there is no resolved track
+   to leave from and the panel jumps the whole way in one frame.
+
+   content-visibility carries the discrete half. The browser sets it to hidden
+   the moment the panel closes, which would cut the close animation off at
+   frame one; allow-discrete holds it visible for the duration and drops it at
+   the end, and that is also what keeps the closed panel out of the tab order
+   and out of the accessibility tree between animations.
+
+   A browser without ::details-content ignores all of it and opens instantly,
+   which is what every one of them did before this rule. */
+@media (prefers-reduced-motion: no-preference) {
+  details {
+    interpolate-size: allow-keywords;
+  }
+
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 200ms ease-out,
+      content-visibility 200ms allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+  }
+}
+
+/* The demo switcher's one light brand, and the only thing it cannot do with a
+   variable. --primary wears two hats here — ink and fill — and a hue at 64%
+   lightness can only wear one: it reads 1.50 on the page, so the 24 icons,
+   chip labels and footer links on `text-primary` would go with it. The wrapper
+   flags the case, the ink role falls back to --foreground, and the hue keeps
+   every fill. None of those uses sits on an inverted ground, so the fallback
+   is always ink on a light surface.
+
+   Unlayered on purpose: Tailwind emits its utilities inside @layer utilities,
+   and any unlayered rule outranks a layered one whatever its specificity.
+
+   Demo-only. A buyer who actually ships a light brand splits the token into
+   ink and fill instead of carrying this. */
+[data-brand="light"] :is(.text-primary, .hover\:text-primary:hover) {
+  color: var(--foreground);
+}
