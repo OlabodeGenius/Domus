@@ -1,21 +1,37 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Reveal } from "@/components/estate/reveal";
-import { SiteFooter } from "@/components/estate/site-footer";
-import { SiteHeader } from "@/components/estate/site-header";
+import {
+  Fraunces,
+  Instrument_Serif,
+  Inter,
+  JetBrains_Mono,
+} from "next/font/google";
+import { SiteFrame } from "@/components/site-frame";
 import { shareImage, siteUrl } from "@/lib/site";
 import "./globals.css";
 
-// The generated @theme inline maps --font-sans → var(--font-sans), so the
-// next/font variable has to be named --font-sans, not --font-geist-sans.
-const geistSans = Geist({
-  variable: "--font-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  display: "swap",
+  axes: ["SOFT", "WONK"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 // The root fallback. Every route that matters exports its own title and
@@ -35,7 +51,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Domus",
-  description: "A Greater Boston brokerage.",
+  description: "Property management, kept in good order.",
   openGraph: {
     siteName: "Domus",
     locale: "en_US",
@@ -73,15 +89,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       // incoming render cancels — every route change lands wherever the last
       // page was scrolled to.
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${fraunces.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SiteHeader />
-        <main className="flex flex-col gap-32 sm:gap-40">{children}</main>
-        <SiteFooter />
-        {/* A behaviour, not a section: it renders nothing and every page's
-            sections carry the one class it looks for. */}
-        <Reveal />
+        <SiteFrame>{children}</SiteFrame>
       </body>
     </html>
   );

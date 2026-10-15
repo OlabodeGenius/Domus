@@ -2,12 +2,38 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+  --font-serif: var(--font-fraunces);
+  --font-heading: var(--font-fraunces);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--text-primary);
+  --color-ink-secondary: var(--text-secondary);
+  --color-ink-muted: var(--text-muted);
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-soft: rgb(59 130 246 / 10%);
+  --color-success: #10b981;
+  --color-success-soft: rgb(16 185 129 / 10%);
+  --color-warning: #f59e0b;
+  --color-warning-soft: rgb(245 158 11 / 10%);
+  --color-danger: #ef4444;
+  --color-danger-soft: rgb(239 68 68 / 10%);
+  --max-width-prose: 68ch;
+  --max-width-editorial: 1240px;
+  --shadow-card-light:
+    0 1px 2px rgb(0 0 0 / 4%), 0 1px 3px rgb(0 0 0 / 2%);
+  --shadow-modal-light: 0 24px 48px -12px rgb(0 0 0 / 18%);
+  --shadow-card-dark: inset 0 1px 0 0 rgb(255 255 255 / 4%);
+  --shadow-modal-dark: 0 8px 24px -4px rgb(0 0 0 / 60%);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -32,7 +58,6 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
   /* The mix is inline here rather than behind a --chip variable on :root. A
      var() nested inside a custom property is substituted where that property
      is *declared*, so --chip would have been resolved once against :root's
@@ -121,6 +146,16 @@
    ───────────────────────────────────────────────────────────── */
 :root {
   --radius: 1.5rem;
+  --canvas: #fafaf7;
+  --surface: #ffffff;
+  --surface-raised: #f5f5f0;
+  --border-strong: #d4d4ce;
+  --text-primary: #1a1a1a;
+  --text-secondary: #525252;
+  --text-muted: #a3a3a3;
+  --landing-canvas: #fafaf7;
+  --landing-rule: #e5e5e0;
+  --landing-highlight: #f5f1e8;
 
   /* Geist's row from the per-face table in the skill's setup notes, bound once
      here so that `font-medium` means the emphasis step of whatever face is
@@ -174,7 +209,7 @@
   --chip-alpha: 6%;
   --destructive: hsl(4 62% 40%);
 
-  --border: hsl(30 6% 94%);
+  --border: #e5e5e0;
   --input: hsl(30 5% 84%);
   --ring: hsl(30 6% 13%);
 
@@ -197,6 +232,17 @@
   --sidebar-accent-foreground: hsl(30 6% 10%);
   --sidebar-border: hsl(30 6% 91.5%);
   --sidebar-ring: hsl(30 6% 13%);
+}
+
+.dark {
+  --canvas: #0b0f17;
+  --surface: #161c28;
+  --surface-raised: #1f2737;
+  --border: #2e384d;
+  --border-strong: #3b4764;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
 }
 
 @layer base {
@@ -269,7 +315,98 @@
   .animate-marquee {
     animation: none;
   }
+}
 
+.admin-theme {
+  --canvas: #fafaf7;
+  --surface: #ffffff;
+  --surface-raised: #f5f5f0;
+  --border: #e5e5e0;
+  --border-strong: #d4d4ce;
+  --text-primary: #1a1a1a;
+  --text-secondary: #525252;
+  --text-muted: #73736f;
+  --landing-canvas: #fafaf7;
+  --landing-rule: #e5e5e0;
+  --landing-highlight: #f5f1e8;
+  --admin-canvas: #fafaf7;
+  --admin-panel: #ffffff;
+  --admin-ink: #1a1a1a;
+  --admin-muted: #73736f;
+  --admin-line: #e9e8e2;
+  --admin-soft: #f3f3ef;
+  --admin-hover: #f6f6f2;
+  --admin-blue: #3b82f6;
+  --admin-green: #10b981;
+  --admin-amber: #f59e0b;
+  --admin-red: #ef4444;
+  color: var(--admin-ink);
+  background: var(--admin-canvas);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 13px;
+}
+
+.admin-theme[data-theme="dark"] {
+  --canvas: #0b0f17;
+  --surface: #161c28;
+  --surface-raised: #1f2737;
+  --border: #2e384d;
+  --border-strong: #3b4764;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --landing-canvas: #0b0f17;
+  --landing-rule: #2e384d;
+  --landing-highlight: #1f2737;
+  --admin-canvas: #0b0f17;
+  --admin-panel: #161c28;
+  --admin-ink: #f1f5f9;
+  --admin-muted: #99a3b2;
+  --admin-line: #263040;
+  --admin-soft: #1d2634;
+  --admin-hover: #202a39;
+}
+
+.admin-theme :is(input, select, textarea, button) {
+  font: inherit;
+}
+
+.admin-display {
+  font-family: var(--font-instrument-serif), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+}
+
+.admin-num {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-theme ::selection {
+  color: #ffffff;
+  background: #3b82f6;
+}
+
+@media print {
+  body:has(.admin-receipt-print) * {
+    visibility: hidden;
+  }
+
+  body:has(.admin-receipt-print) .admin-receipt-print,
+  body:has(.admin-receipt-print) .admin-receipt-print * {
+    visibility: visible;
+  }
+
+  body:has(.admin-receipt-print) .admin-receipt-print {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
   /* The blanket kill. Individual components carry motion-reduce: variants for
      the motion they own, but a template is going to grow motion this file has
      never heard of, and the floor is that the page is complete with every
